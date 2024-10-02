@@ -5,17 +5,6 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: '/',
-        has: [
-          {
-            type: 'host',
-            value: 'www.aurascore.app',
-          },
-        ],
-        destination: 'https://aurascore.app',
-        permanent: true,
-      },
-      {
         source: '/:path*',
         has: [
           {
@@ -31,6 +20,7 @@ const nextConfig = {
 }
 
 module.exports = nextConfig
+
 
 // /** @type {import('next').NextConfig} */
 // #const nextConfig = {

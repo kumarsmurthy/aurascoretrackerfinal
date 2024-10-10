@@ -1,5 +1,3 @@
-'use client'
-
 import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -36,7 +34,7 @@ const categories: Category[] = [
     title: "Physical Wellbeing",
     icon: <DumbbellIcon />,
     toggleOptions: ["Light Workout", "Heavy Workout"],
-    color: "orange",
+    color: "blue",
     sliderMax: 60,
     sliderUnit: "minutes",
   },
@@ -44,7 +42,7 @@ const categories: Category[] = [
     title: "Sleep / Relaxation",
     icon: <MoonIcon />,
     toggleOptions: ["Poor Sleep", "Good Sleep"],
-    color: "indigo",
+    color: "blue",
     sliderMax: 12,
     sliderUnit: "hours",
   },
@@ -52,8 +50,8 @@ const categories: Category[] = [
     title: "Fasting",
     icon: <UtensilsIcon />,
     toggleOptions: ["Intermittent Fasting", "Extended Fasting"],
-    color: "yellow",
-    sliderMax: 8,
+    color: "blue",
+    sliderMax: 24,
     sliderUnit: "hours",
   },
   {
@@ -61,55 +59,26 @@ const categories: Category[] = [
     icon: <HeartIcon />,
     toggleOptions: ["In-person Interaction", "Virtual Interaction"],
     color: "blue",
-    sliderMax: 6,
-    sliderUnit: "hours",
+    sliderMax: 60,
+    sliderUnit: "minutes",
   },
   {
     title: "Accomplishment",
     icon: <TrophyIcon />,
-    color: "green",
+    color: "blue",
     isTextInput: true,
   },
   {
     title: "Gratitude",
     icon: <SmileIcon />,
-    color: "purple",
+    color: "blue",
     isTextInput: true,
   },
 ]
 
-const WelcomePage: React.FC<{ onContinue: () => void }> = ({ onContinue }) => {
-  const currentDate = new Date()
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="w-full max-w-4xl mx-auto text-center"
-    >
-      <Card className="bg-gradient-to-br from-purple-400 to-indigo-600 text-white">
-        <CardHeader>
-          <CardTitle className="text-4xl font-bold mb-4">Hello! Welcome to AuraScore</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-xl mb-6">One place to track all your wellness goals</p>
-          <p className="text-lg mb-8">{format(currentDate, 'MMMM d, yyyy')}</p>
-          <Button 
-            onClick={onContinue}
-            className="bg-white text-purple-600 hover:bg-gray-100 hover:text-purple-700 transition-colors duration-200"
-          >
-            Start Tracking
-          </Button>
-        </CardContent>
-      </Card>
-    </motion.div>
-  )
-}
-
 const SpeedometerChart: React.FC<{ score: number }> = ({ score }) => {
-  const angle = (score / 100) * 180 - 90; // Adjusted for new max score of 100
-  const color = score < 33 ? "#FF4136" : score < 66 ? "#FFDC00" : "#2ECC40";
+  const angle = (score / 200) * 180 - 90;
+  const color = score < 70 ? "#FF4136" : score < 140 ? "#FFDC00" : "#2ECC40";
 
   return (
     <div className="w-16 h-8 relative">
@@ -125,7 +94,7 @@ const SpeedometerChart: React.FC<{ score: number }> = ({ score }) => {
           fill="none"
           stroke={color}
           strokeWidth="10"
-          strokeDasharray={`${(score / 100) * 141.37} 141.37`}
+          strokeDasharray={`${(score / 200) * 141.37} 141.37`}
         />
         <line
           x1="50"
@@ -298,7 +267,7 @@ const UserProfile: React.FC<{ user: User; onBack: () => void }> = ({ user, onBac
   )
 }
 
-export default function Component() {
+export default function AuraScoreTrackerWithCalendar() {
   const [user, setUser] = useState<User | null>(null)
   const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0)
   const [toggleStates, setToggleStates] = useState(categories.map(() => false))
@@ -310,7 +279,6 @@ export default function Component() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
   const [showCalendar, setShowCalendar] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
-  const [showWelcome, setShowWelcome] = useState(false)
 
   useEffect(() => {
     const storedUser = localStorage.getItem('currentUser')
@@ -320,7 +288,6 @@ export default function Component() {
         parsedUser.auraScores = {}
       }
       setUser(parsedUser)
-      setShowWelcome(true)
     }
   }, [])
 
@@ -332,7 +299,6 @@ export default function Component() {
     }
     setUser(authUser)
     localStorage.setItem('currentUser', JSON.stringify(authUser))
-    setShowWelcome(true)
   }
 
   const handleLogout = () => {
@@ -380,15 +346,12 @@ export default function Component() {
   }
 
   const calculateAuraScore = () => {
-    const score = (
-      ((sliderValues[0] / 60) * 20) + // Physical Wellbeing
-      ((sliderValues[1] / 12) * 20) + // Sleep / Relaxation
-      
-      ((sliderValues[2] / 8) * 20) +  // Fasting
-      ((sliderValues[3] / 6) * 20) +  // Emotional Wellbeing
-      10 +                            // Accomplishment
-      10                              // Gratitude
-    )
+    const score = sliderValues[0] + // Physical Wellbeing minutes
+                  sliderValues[1] + // Sleep hours
+                  sliderValues[2] + // Fasting hours
+                  sliderValues[3] + // Emotional Wellbeing minutes
+                  1 + // Accomplishment (always 1)
+                  1   // Gratitude (always 1)
     setAuraScore(score)
     setShowFinalScore(true)
 
@@ -481,8 +444,6 @@ export default function Component() {
       <div className="flex-grow flex items-center justify-center p-4 md:p-8">
         {!user ? (
           <AuthForm onAuth={handleAuth} />
-        ) : showWelcome ? (
-          <WelcomePage onContinue={() => setShowWelcome(false)} />
         ) : showProfile ? (
           <UserProfile user={user} onBack={() => setShowProfile(false)} />
         ) : showCalendar ? (
@@ -514,36 +475,6 @@ export default function Component() {
                   {React.cloneElement(currentCategory.icon as React.ReactElement, { className: `h-6 w-6 md:h-8 md:w-8 mr-3 text-${currentCategory.color}-500` })}
                   {currentCategory.title}
                 </CardTitle>
-                {currentCategory.title === "Physical Wellbeing" && (
-                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                    Working out everyday will lead to good mental and physical health. How many minutes did you workout today?
-                  </p>
-                )}
-                {currentCategory.title === "Sleep / Relaxation" && (
-                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                    Relaxation is as important as physical workout for a peaceful state of mind.
-                  </p>
-                )}
-                {currentCategory.title === "Fasting" && (
-                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                    Fasting for few hours a day will help in reducing weight and boosts metabolism.
-                  </p>
-                )}
-                {currentCategory.title === "Emotional Wellbeing" && (
-                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                    Connecting with your loved ones helps reduce anxiety, stress and improves overall mental health. How many hours did you interact with your loved ones today?
-                  </p>
-                )}
-                {currentCategory.title === "Accomplishment" && (
-                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                    Accomplishing a task will improve your self confidence and promotes positive mindset. What did you accomplish today?
-                  </p>
-                )}
-                {currentCategory.title === "Gratitude" && (
-                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                    Being grateful for what we have in our life will lead to a positive mindset and makes us happy. What are you grateful for today?
-                  </p>
-                )}
               </CardHeader>
               <CardContent className="p-4 md:p-8">
                 <div className="mb-4 text-center">

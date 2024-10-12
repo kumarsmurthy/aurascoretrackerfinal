@@ -374,7 +374,7 @@ export default function Component() {
   }
 
   const addTextInput = () => {
-    const newTextInputs = [...textInputs]
+    const newTextInputs  = [...textInputs]
     newTextInputs[currentCategoryIndex].push('')
     setTextInputs(newTextInputs)
   }

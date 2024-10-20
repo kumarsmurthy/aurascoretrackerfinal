@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,7 +10,6 @@ import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { motion } from "framer-motion"
 import { format } from "date-fns"
-import confetti from 'canvas-confetti'
 
 import { DumbbellIcon, MoonIcon, UtensilsIcon, HeartIcon, TrophyIcon, SmileIcon, ArrowRightIcon, ArrowLeftIcon, PlusIcon } from "lucide-react"
 
@@ -143,44 +142,27 @@ const WelcomePage: React.FC<{ onContinue: () => void, user: User | null, onSignI
 }
 
 const AuraScoreDisplay: React.FC<{ score: number, onReset: () => void }> = ({ score, onReset }) => {
-  useEffect(() => {
-    const duration = 3 * 1000
-    const animationEnd = Date.now() + duration
-    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 }
+  //Removed: const [windowDimension, setWindowDimension] = useState<{ width: number; height: number }>({ width: 0, height: 0 })
+  //Removed: const [showConfetti, setShowConfetti] = useState(true)
+  //Removed: const refAnimationInstance = useRef<((opts: any) => void) | null>(null)
 
-    function randomInRange(min: number, max: number) {
-      return Math.random() * (max - min) + min
-    }
 
-    const interval: NodeJS.Timeout = setInterval(function() {
-      const timeLeft = animationEnd - Date.now()
+  //Removed useEffect
+  //Removed useEffect
+  //Removed getInstance
+  //Removed makeShot
+  //Removed firePartyPopper
+  //Removed useEffect
 
-      if (timeLeft <= 0) {
-        return clearInterval(interval)
-      }
-
-      const particleCount = 50 * (timeLeft / duration)
-      
-      confetti(Object.assign({}, defaults, { 
-        particleCount, 
-        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } 
-      }))
-      confetti(Object.assign({}, defaults, { 
-        particleCount, 
-        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } 
-      }))
-    }, 250)
-
-    return () => clearInterval(interval)
-  }, [])
 
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5 }}
-      className="text-center w-full max-w-md px-4 sm:px-6"
+      className="text-center w-full max-w-md px-4 sm:px-6 relative z-10"
     >
+      {/*Removed ReactConfetti and ReactCanvasConfetti JSX */}
       <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800">Your AuraScore</h2>
       <div className="w-48 h-48 mx-auto mb-6">
         <svg viewBox="0 0 100 100" className="w-full h-full">
@@ -289,12 +271,13 @@ const ProfilePage: React.FC<{ user: User, onBack: () => void }> = ({ user, onBac
   )
 }
 
-export function AuraScoreTracker() {
+const AuraScoreTracker: React.FC = () => {
   const [user, setUser] = useState<User | null>(null)
   const [showProfile, setShowProfile] = useState(false)
   const [showWelcome, setShowWelcome] = useState(true)
   const [showFinalScore, setShowFinalScore] = useState(false)
   const [auraScore, setAuraScore] = useState(0)
+  
   const [showAuth, setShowAuth] = useState(false)
   const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0)
   const [toggleStates, setToggleStates] = useState(categories.map(() => false))
@@ -346,7 +329,6 @@ export function AuraScoreTracker() {
 
   const handleToggleChange = (checked: boolean) => {
     const newToggleStates = [...toggleStates]
-    
     newToggleStates[currentCategoryIndex] = checked
     setToggleStates(newToggleStates)
   }
@@ -544,3 +526,5 @@ export function AuraScoreTracker() {
     </DynamicBackground>
   )
 }
+
+export default AuraScoreTracker

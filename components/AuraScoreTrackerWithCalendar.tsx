@@ -445,7 +445,7 @@ const AuraScoreTracker: React.FC = () => {
                     {categories[currentCategoryIndex].title === "Fasting" && "Fasting for few hours a day will help in reducing weight and boosts metabolism."}
                     {categories[currentCategoryIndex].title === "Emotional Wellbeing" && "Connecting with your loved ones helps reduce anxiety, stress and improves overall mental health. How many hours did you interact with your loved ones today?"}
                     {categories[currentCategoryIndex].title === "Accomplishment" && "Accomplishing a task will improve your self confidence and promotes positive mindset. What did you accomplish today?"}
-                    {categories[currentCategoryIndex].title === "Gratitude" && "Being grateful for what we have in our life will lead to a positive mindset and makes us happy. What are you grateful for today?"}
+                    {categories[currentCategoryIndex].title === "Gratitude" && "Being grateful for what we have in our life will lead to a positive mindset and makes us happy and calm, What are you grateful for today?"}
                   </p>
                 </CardHeader>
                 <CardContent className="p-4 sm:p-6 md:p-8 text-gray-800">
